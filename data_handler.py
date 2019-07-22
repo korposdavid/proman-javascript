@@ -24,7 +24,7 @@ def get_boards(cursor):
     :return:
     """
     cursor.execute('''
-                       SELECT title FROM boards;
+                       SELECT title, id FROM boards;
                        ''')
     result = cursor.fetchall()
     return result
