@@ -33,6 +33,16 @@ def get_cards_for_board(board_id: int):
     return data_handler.get_cards_for_board(board_id)
 
 
+@app.route("/get-columns/<int:board_id>")
+@json_response
+def get_columns_for_board(board_id: int):
+    """
+    All columns that belongs to a board
+    :param board_id: id of the parent board
+    """
+    return data_handler.get_columns_for_board_id(board_id)
+
+
 def main():
     app.run(debug=True)
 
