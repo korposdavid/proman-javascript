@@ -34,14 +34,41 @@ export let dom = {
 
         for(let board of boards){
             boardList += `
-                <li>${board.title}</li>
+                <section class="board">
+                    <div class="board-header"><span class="board-title">${board.title}</span>
+                        <button class="board-add">Add Card</button>
+                        <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="board-columns">
+                        <div class="board-column">
+                            <div class="board-column-title">New</div>
+                            <div class="board-column-content">
+                            </div>
+                        </div>
+                        <div class="board-column">
+                            <div class="board-column-title">In progress</div>
+                            <div class="board-column-content">
+                            </div>
+                        </div>
+                        <div class="board-column">
+                            <div class="board-column-title">Testing</div>
+                            <div class="board-column-content">
+                            </div>
+                        </div>
+                        <div class="board-column">
+                            <div class="board-column-title">Done</div>
+                            <div class="board-column-content">
+                            </div>
+                        </div>
+                    </div>
+                </section>
             `;
         }
 
         const outerHtml = `
-            <ul class="board-container">
+            <div class="board-container">
                 ${boardList}
-            </ul>
+            </div>
         `;
 
         this._appendToElement(document.querySelector('#boards'), outerHtml);
