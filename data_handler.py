@@ -41,3 +41,14 @@ def get_cards_for_board(cursor, board_id):
     result = cursor.fetchall()
     return result
 
+
+@connection.connection_handler
+def get_columns_for_board_id(cursor, board_id):
+    cursor.execute('''
+                   SELECT statuses.title
+                   FROM boards_statuses JOIN statuses ON boards_statuses.status_id = statuses.id
+                   WHERE boards_statuses.board_id = %(board_id)s
+                   ''',
+                   {'board_id': board_id})
+    result = cursor.fetchall()
+    return result
