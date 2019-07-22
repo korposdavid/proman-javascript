@@ -32,6 +32,13 @@ export let dataHandler = {
             callback(response);
         });
     },
+    getColumns: function (boardId, callback) {
+        let url = '/get-columns/' + boardId.toString();
+        this._api_get(url, (response) => {
+            this._data = response;
+            callback(response);
+        });
+    },
     getBoard: function (boardId, callback) {
         // the board is retrieved and then the callback function is called with the board
     },
