@@ -31,13 +31,14 @@ def get_boards(cursor):
 
 
 @connection.connection_handler
-def get_cards_for_board(cursor, board_id):
+def get_cards_for_board(cursor, board_id, column_id):
     cursor.execute('''
-                   SELECT cards.title, statuses.title, cards.card_order FROM cards
-                   LEFT JOIN statuses ON status_id=statuses.id
-                   WHERE board_id = %(board_id)s;
+                   SELECT title, status_id, board_id FROM cards
+                   WHERE board_id = %(board_id)s AND status_id = %(column_id)s
+                   ORDER BY card_order;
                    ''',
-                   {'board_id': board_id})
+                   {'board_id': board_id,
+                    'column_id': column_id})
     result = cursor.fetchall()
     return result
 
@@ -45,7 +46,7 @@ def get_cards_for_board(cursor, board_id):
 @connection.connection_handler
 def get_columns_for_board_id(cursor, board_id):
     cursor.execute('''
-                   SELECT statuses.title
+                   SELECT statuses.title, statuses.id
                    FROM boards_statuses JOIN statuses ON boards_statuses.status_id = statuses.id
                    WHERE boards_statuses.board_id = %(board_id)s
                    ''',
