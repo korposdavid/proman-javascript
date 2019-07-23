@@ -87,9 +87,12 @@ def get_latest_board_id(cursor):
 @connection.connection_handler
 def get_board_by_board_id(cursor, board_id):
     cursor.execute('''
-                   SELECT *
-                   FROM boards
-                   WHERE id = %(board_id)s
-                   ''')
+                    SELECT board_id, status_id, b.title as board_title, s.title as status_title from boards as b
+                    JOIN boards_statuses on b.id = boards_statuses.board_id
+                    JOIN statuses s on boards_statuses.status_id = s.id
+                    WHERE b.id = %(board_id)s
+                   ''',
+                   {'board_id': board_id})
+
     result = cursor.fetchall()
     return result

@@ -120,21 +120,35 @@ export let dom = {
             request.onload = function () {
                 if (request.response.error) {
                     console.log('elszurtad')
-                }else {
+                } else {
 
+                    let columnList = '';
+
+                    for (let column of JSON.parse(request.response)) {
+
+                        columnList += `
+                <div class="board-column">
+                    <div class="board-column-title">${column.status_title}</div>
+                        <div class="board-column-content" id="board-${column.board_id}-column-${column.status_id}">
+                    </div>
+                </div>
+            `;
+                    }
                     let newBoardHtml = `
                     
-                    <section class="board" data-board-id="${boards.id}">
-                        <div class="board-header"><span class="board-title">${boards.title}</span>
+                    <section class="board" data-board-id="${JSON.parse(request.response)[0].board_id}">
+                        <div class="board-header"><span class="board-title">${JSON.parse(request.response)[0].board_title}</span>
                             <button class="board-add">Add Card</button>
                             <button class="board-add">Add Column</button>
                             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
                         </div>
-                    <div class="board-columns" id="board-column-${boards.id}"></div>
-                    </section>
+                    <div class="board-columns" id="board-column-${JSON.parse(request.response)[0].board_id}">
+                        ${columnList}
+                    </div>
+                     </section>
                     `;
 
-                    let container = document.querySelector('#boards');
+                    let container = document.querySelector('.board-container');
                     container.insertAdjacentHTML('beforeend', newBoardHtml)
                 }
 
