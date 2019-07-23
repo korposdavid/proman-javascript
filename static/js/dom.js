@@ -87,7 +87,6 @@ export let dom = {
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
-        console.log(cards)
     },
     // here comes more features
     };
