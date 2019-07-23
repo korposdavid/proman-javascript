@@ -78,11 +78,16 @@ export let dom = {
         this._appendToElement(document.querySelector('#board-column-'+boardId.toString()), columnList)
     },
     loadCards: function (boardId) {
-        // retrieves cards and makes showCards called
+        // retrieves cards and make s showCards called
+        dataHandler.getCardsByBoardId(boardId, function(cards){
+            dom.showCards(cards)
+        })
+
     },
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
+        console.log(cards)
     },
     // here comes more features
-};
+    };
