@@ -53,3 +53,29 @@ def get_columns_for_board_id(cursor, board_id):
                    {'board_id': board_id})
     result = cursor.fetchall()
     return result
+
+
+@connection.connection_handler
+def add_new_status_to_db(cursor):
+    cursor.execute('''
+                   INSERT INTO statuses (title) VALUES ('new column');
+                   ''',)
+
+
+@connection.connection_handler
+def get_newest_column_id(cursor):
+    cursor.execute('''
+                   SELECT id, title FROM statuses 
+                   ORDER BY id DESC LIMIT 1;
+                   ''')
+    result = cursor.fetchone()
+    return result
+
+
+@connection.connection_handler
+def add_connection_to_boards_statuses(cursor, board_id, status_id):
+    cursor.execute('''
+                   INSERT INTO boards_statuses (board_id, status_id) VALUES (%(board_id)s, %(status_id)s);
+                   ''',
+                   {'board_id': board_id,
+                    'status_id': status_id})
