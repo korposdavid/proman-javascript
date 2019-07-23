@@ -39,8 +39,8 @@ export let dom = {
             boardList += `
                 <section class="board" data-board-id="${board.id}">
                     <div class="board-header"><span class="board-title">${board.title}</span>
-                        <button class="board-add">Add Card</button>
-                        <button class="board-add">Add Column</button>
+                        <button class="board-add add-card">Add Card</button>
+                        <button class="board-add add-column" value="/new-column/${board.id}">Add Column</button>
                         <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
                     </div>
                     <div class="board-columns" id="board-column-${board.id}"></div>
@@ -55,6 +55,7 @@ export let dom = {
         `;
 
         this._appendToElement(document.querySelector('#boards'), outerHtml);
+        dom.addNewColumnButtons();
     },
     loadColumns: function (boardId) {
         // retrieves columns for boards and makes showColumns called
@@ -108,6 +109,20 @@ export let dom = {
         }
         this._appendToElement(document.querySelector('#board-' + boardId.toString() + '-column-' + statusId.toString()), cardList)
 
+    },
+    addNewColumnButtons: function () {
+        let newColButtons = document.getElementsByClassName("add-column")
+        for (let button of newColButtons) {
+            button.addEventListener('click', function() {
+                let request = new XMLHttpRequest();
+                request.open("GET", button.value, true);
+                request.send();
+                request.onload = function() {
+                    let response = JSON.parse(request.response);
+                    dom.showColumns([{'id': response.status_id, 'title': response.status_title}], response.board_id);
+                }
+            })
+        }
     },
     // here comes more features
 };
