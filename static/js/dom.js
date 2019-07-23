@@ -110,4 +110,36 @@ export let dom = {
 
     },
     // here comes more features
+    newBoardBtn: function () {
+        let button = document.getElementById('new-board');
+        button.addEventListener('click', function () {
+
+            let request = new XMLHttpRequest();
+            request.open('GET', '/new-board', true)
+            request.send();
+            request.onload = function () {
+                if (request.response.error) {
+                    console.log('elszurtad')
+                }else {
+
+                    let newBoardHtml = `
+                    
+                    <section class="board" data-board-id="${boards.id}">
+                        <div class="board-header"><span class="board-title">${boards.title}</span>
+                            <button class="board-add">Add Card</button>
+                            <button class="board-add">Add Column</button>
+                            <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                    <div class="board-columns" id="board-column-${boards.id}"></div>
+                    </section>
+                    `;
+
+                    let container = document.querySelector('#boards');
+                    container.insertAdjacentHTML('beforeend', newBoardHtml)
+                }
+
+            }
+
+        })
+    }
 };

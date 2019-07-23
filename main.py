@@ -43,6 +43,20 @@ def get_columns_for_board(board_id: int):
     return data_handler.get_columns_for_board_id(board_id)
 
 
+@app.route("/new-board")
+@json_response
+def new_board():
+    try:
+        data_handler.add_new_board()
+        board_id = data_handler.get_latest_board_id()
+        basic_status_numbers = 4
+        for x in range(basic_status_numbers):
+            data_handler.add_new_board_statuses(board_id, x)
+        return data_handler.get_board_by_board_id(board_id)
+    except:
+        return {'error': 'error'}
+
+
 def main():
     app.run(debug=True)
 
