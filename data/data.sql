@@ -2,6 +2,9 @@ DROP TABLE IF EXISTS public.cards;
 DROP TABLE IF EXISTS public.boards_statuses;
 DROP TABLE IF EXISTS public.statuses;
 DROP TABLE IF EXISTS public.boards;
+DROP SEQUENCE IF EXISTS public.boards_id_seq;
+DROP SEQUENCE IF EXISTS public.cards_id_seq;
+DROP SEQUENCE IF EXISTS public.statuses_id_seq;
 
 CREATE TABLE public.boards (
     id SERIAL NOT NULL,
@@ -9,7 +12,7 @@ CREATE TABLE public.boards (
 );
 
 CREATE TABLE public.cards (
-    id SERIAL NOT NULL,
+    id SERIAL,
     board_id integer,
     title character varying,
     status_id integer DEFAULT 0,
@@ -80,3 +83,8 @@ INSERT INTO public.boards_statuses (board_id, status_id) VALUES (2, 0);
 INSERT INTO public.boards_statuses (board_id, status_id) VALUES (2, 1);
 INSERT INTO public.boards_statuses (board_id, status_id) VALUES (2, 2);
 INSERT INTO public.boards_statuses (board_id, status_id) VALUES (2, 4);
+
+
+SELECT setval('boards_id_seq', 2, true);
+SELECT setval('cards_id_seq', 11, true);
+SELECT setval('statuses_id_seq', 4, true);
