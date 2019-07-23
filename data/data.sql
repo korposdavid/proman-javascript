@@ -1,10 +1,13 @@
+DROP TABLE IF EXISTS public.cards;
+DROP TABLE IF EXISTS public.boards_statuses;
+DROP TABLE IF EXISTS public.statuses;
 DROP TABLE IF EXISTS public.boards;
+
 CREATE TABLE public.boards (
     id SERIAL NOT NULL,
     title character varying
 );
 
-DROP TABLE IF EXISTS public.cards;
 CREATE TABLE public.cards (
     id SERIAL NOT NULL,
     board_id integer,
@@ -13,12 +16,10 @@ CREATE TABLE public.cards (
     card_order integer
 );
 
-DROP TABLE IF EXISTS public.statuses;
 CREATE TABLE public.statuses (
     id SERIAL NOT NULL,
     title character varying
 );
-
 
 ALTER TABLE ONLY public.boards
     ADD CONSTRAINT boards_pkey PRIMARY KEY (id);
@@ -40,6 +41,15 @@ ALTER TABLE ONLY public.cards
     ADD CONSTRAINT cards_statuses__fk FOREIGN KEY (status_id) REFERENCES public.statuses(id);
 
 
+CREATE TABLE public.boards_statuses (
+	board_id integer
+		constraint "boards_statuses_boards_boards.id_fk"
+			references boards,
+	status_id integer
+		constraint boards_statuses_statuses__fk
+			references statuses
+);
+
 INSERT INTO public.boards (id, title) VALUES (1, 'Board 1');
 INSERT INTO public.boards (id, title) VALUES (2, 'Board 2');
 
@@ -47,6 +57,7 @@ INSERT INTO public.statuses (id, title) VALUES (0, 'new');
 INSERT INTO public.statuses (id, title) VALUES (1, 'in progress');
 INSERT INTO public.statuses (id, title) VALUES (2, 'testing');
 INSERT INTO public.statuses (id, title) VALUES (3, 'done');
+INSERT INTO public.statuses (id, title) VALUES (4, 'extra');
 
 INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (1, 1, 'new card 1', 0, 0);
 INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (2, 1, 'new card 2', 0, 1);
@@ -60,3 +71,12 @@ INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (6,
 INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (10, 2, 'planning', 2, 0);
 INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (11, 2, 'done 1', 3, 0);
 INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (12, 2, 'done 1', 3, 1);
+
+INSERT INTO public.boards_statuses (board_id, status_id) VALUES (1, 0);
+INSERT INTO public.boards_statuses (board_id, status_id) VALUES (1, 1);
+INSERT INTO public.boards_statuses (board_id, status_id) VALUES (1, 2);
+INSERT INTO public.boards_statuses (board_id, status_id) VALUES (1, 3);
+INSERT INTO public.boards_statuses (board_id, status_id) VALUES (2, 0);
+INSERT INTO public.boards_statuses (board_id, status_id) VALUES (2, 1);
+INSERT INTO public.boards_statuses (board_id, status_id) VALUES (2, 2);
+INSERT INTO public.boards_statuses (board_id, status_id) VALUES (2, 4);
