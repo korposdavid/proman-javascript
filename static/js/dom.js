@@ -24,6 +24,7 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
+            dom.hideLoadingContent();
             for (let board of boards) {
                 dom.loadColumns(board.id);
             }
@@ -110,4 +111,9 @@ export let dom = {
 
     },
     // here comes more features
+
+    hideLoadingContent: function () {
+        document.querySelector('#loading').textContent = '';
+
+    }
 };
