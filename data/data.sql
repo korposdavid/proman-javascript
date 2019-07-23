@@ -72,8 +72,8 @@ INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (8,
 INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (9, 2, 'in progress card', 1, 0);
 INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (6, 1, 'done 1', 3, 1);
 INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (10, 2, 'planning', 2, 0);
-INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (11, 2, 'done 1', 3, 0);
-INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (12, 2, 'done 1', 3, 1);
+INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (11, 2, 'extra', 4, 0);
+INSERT INTO public.cards (id, board_id, title, status_id, card_order) VALUES (12, 2, 'extra 2', 4, 1);
 
 INSERT INTO public.boards_statuses (board_id, status_id) VALUES (1, 0);
 INSERT INTO public.boards_statuses (board_id, status_id) VALUES (1, 1);
