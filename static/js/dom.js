@@ -28,7 +28,7 @@ export let dom = {
             for (let board of boards) {
                 dom.loadColumns(board.id);
             }
-            dom.editContent();
+            dom.editBoardContent();
         });
     },
     showBoards: function (boards) {
@@ -40,7 +40,8 @@ export let dom = {
         for (let board of boards) {
             boardList += `
                 <section class="board" data-board-id="${board.id}">
-                    <div class="board-header"><span class="board-title" contenteditable="true" data-name="text">${board.title}</span>
+                    <div class="board-header"><span class="board-title" contenteditable="true" data-name="${board.title}"
+                    data-url="/rename/board" data-id="${board.id}">${board.title}</span>
                         
                         <button class="board-add">Add Card</button>
                         <button class="board-add">Add Column</button>
@@ -68,6 +69,7 @@ export let dom = {
                 dom.loadCards(column.id, boardId)
 
             }
+            dom.editColumnContent();
         });
     },
     showColumns: function (columns, boardId) {
@@ -76,7 +78,8 @@ export let dom = {
         for (let column of columns) {
             columnList += `
                 <div class="board-column">
-                    <div class="board-column-title" contenteditable="true">${column.title}</div>
+                    <div class="board-column-title" contenteditable="true" data-name="${column.title}"
+                    data-url="/rename/column/${column.id}">${column.title}</div>
                         <div class="board-column-content" id="board-${boardId}-column-${column.id}">
                         </div>
                     </div>
@@ -88,7 +91,8 @@ export let dom = {
     loadCards: function (columnId, boardId) {
         // retrieves cards and make s showCards called
         dataHandler.getCardsByBoardId(columnId, boardId, function (cards) {
-            dom.showCards(cards)
+            dom.showCards(cards);
+            dom.editCardContent();
         })
 
     },
@@ -105,7 +109,8 @@ export let dom = {
             cardList += `
                 <div class="card">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                    <div class="card-title">${card.title}</div>
+                    <div class="card-title" data-name="${card.title}" contenteditable="true"
+                    data-url="/rename/card/${card.id}">${card.title}</div>
                 </div>
             `;
         }
@@ -118,34 +123,64 @@ export let dom = {
         document.querySelector('#loading').textContent = '';
     },
 
-    editContent: function () {
+    editBoardContent: function () {
         let titles = document.querySelectorAll('.board-title');
-        titles.addEventListener('keydown', function (event) {
-            let esc = event.which === 27;
-            let enter = event.which === 13;
-            let element = event.target;
-            let text = element.nodeName !== 'INPUT' && element.nodeName !== 'TEXTAREA';
-            let data = {};
+        dom.editContent(titles)
+    },
 
-            if(text){
-                if(esc){
-                    document.querySelectorAll('.board-title').execCommand('undo');
-                    element.blur();
-                } else if (enter){
-                    data[element.getAttribute('data-name')] = element.innerHTML;
-                    element.blur();
+    editColumnContent: function () {
+        let titles = document.querySelectorAll('.board-column-title');
+        dom.editContent(titles);
+    },
+
+    editCardContent: function () {
+        let titles = document.querySelectorAll('.card-title');
+        dom.editContent(titles);
+    },
+
+    editContent: function (titles,) {
+        for (let title of titles) {
+            title.addEventListener('focusout', function () {
+                title.innerHTML = title.getAttribute('data-name');
+
+            });
+            title.addEventListener('keydown', function (event) {
+                let esc = event.which === 27;
+                let enter = event.which === 13;
+                let data = {};
+
+                if (esc) {
+                    title.innerHTML = title.getAttribute('data-name');
+                    title.blur();
+
+                } else if (enter) {
+                    data['newTitle'] = title.innerHTML;
+                    data['id'] = title.getAttribute('data-id');
                     event.preventDefault();
+
+                    let request = new XMLHttpRequest();
+                    let URL = title.getAttribute('data-url');
+                    request.open('POST', URL, true);
+                    request.setRequestHeader("Content-type", 'application/json');
+                    request.send(JSON.stringify(data));
+
+                    request.onload = function () {
+                        title.setAttribute('data-name', title.innerHTML);
+                        title.blur();
+                    }
                 }
-            }
-        })
+            })
+        }
     },
 
     hideCards: function () {
         let toggleBtn = document.getElementsByClassName("board-toggle");
-        toggleBtn.addEventListener('click', function () {
-            let cards = document.getElementsByClassName("board-column");
-            cards.hidden=true;
-        })
+        for (let btn of toggleBtn) {
+            btn.addEventListener('click', function () {
+                let cards = document.getElementsByClassName("board-column");
+                cards.hidden = true;
+            })
+        }
     }
 
 };

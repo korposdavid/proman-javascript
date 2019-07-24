@@ -24,7 +24,8 @@ def get_boards(cursor):
     :return:
     """
     cursor.execute('''
-                       SELECT title, id FROM boards;
+                       SELECT title, id FROM boards
+                       ORDER BY id;
                        ''')
     result = cursor.fetchall()
     return result
@@ -53,3 +54,14 @@ def get_columns_for_board_id(cursor, board_id):
                    {'board_id': board_id})
     result = cursor.fetchall()
     return result
+
+
+@connection.connection_handler
+def rename_board_by_id(cursor, board_id, new_title):
+    cursor.execute('''
+                   UPDATE boards
+                   SET title = %(new_title)s
+                   WHERE id = %(board_id)s
+                   ''',
+                   {'board_id': board_id,
+                    'new_title': new_title})
