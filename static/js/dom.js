@@ -37,16 +37,7 @@ export let dom = {
         let boardList = '';
 
         for (let board of boards) {
-            boardList += `
-                <section class="board" data-board-id="${board.id}">
-                    <div class="board-header"><span class="board-title">${board.title}</span>
-                        <button class="board-add add-card" value="/new-card/${board.id}">Add Card</button>
-                        <button class="board-add add-column" value="/new-column/${board.id}">Add Column</button>
-                        <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
-                    </div>
-                    <div class="board-columns" id="board-column-${board.id}"></div>
-                </section>
-            `;
+            boardList += dom.generateBoardHtml(board.id, board.title);
         }
 
         const outerHtml = `
@@ -74,14 +65,7 @@ export let dom = {
         let columnList = '';
 
         for (let column of columns) {
-            columnList += `
-                <div class="board-column">
-                    <div class="board-column-title">${column.title}</div>
-                        <div class="board-column-content" id="board-${boardId}-column-${column.id}">
-                        </div>
-                    </div>
-                </div>
-            `;
+            columnList += dom.generateColumnHtml(boardId, column.id, column.title);
         }
         this._appendToElement(document.querySelector('#board-column-' + boardId.toString()), columnList)
     },
@@ -162,7 +146,7 @@ export let dom = {
         return columnElement
     },
 
-    generateBoardHtml: function (board_id, board_title, columnList) {
+    generateBoardHtml: function (board_id, board_title, columnList="") {
 
         let boardElement = `
         <section class="board" data-board-id="${board_id}">
