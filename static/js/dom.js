@@ -118,42 +118,48 @@ export let dom = {
             request.open('GET', '/new-board', true)
             request.send();
             request.onload = function () {
-                if (request.response.error) {
-                    console.log('elszurtad')
-                } else {
-
-                    let columnList = '';
-
-                    for (let column of JSON.parse(request.response)) {
-
-                        columnList += `
-                <div class="board-column">
-                    <div class="board-column-title">${column.status_title}</div>
-                        <div class="board-column-content" id="board-${column.board_id}-column-${column.status_id}">
-                    </div>
-                </div>
-            `;
-                    }
-                    let newBoardHtml = `
-                    
-                    <section class="board" data-board-id="${JSON.parse(request.response)[0].board_id}">
-                        <div class="board-header"><span class="board-title">${JSON.parse(request.response)[0].board_title}</span>
-                            <button class="board-add">Add Card</button>
-                            <button class="board-add">Add Column</button>
-                            <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
-                        </div>
-                    <div class="board-columns" id="board-column-${JSON.parse(request.response)[0].board_id}">
-                        ${columnList}
-                    </div>
-                     </section>
-                    `;
-
-                    let container = document.querySelector('.board-container');
-                    container.insertAdjacentHTML('beforeend', newBoardHtml)
+                let columnList = '';
+                let columnsData = JSON.parse(request.response);
+                for (let column of columnsData) {
+                    columnList += dom.generateColumnHtml(column.board_id, column.status_id, column.status_title);
                 }
+                let newBoardHtml = dom.generateBoardHtml(columnsData[0].board_id, columnsData[0].board_title, columnList)
 
+                let container = document.querySelector('.board-container');
+                container.insertAdjacentHTML('beforeend', newBoardHtml)
             }
 
         })
+    },
+
+    generateColumnHtml: function (board_id, status_id, status_title) {
+
+        let columnElement = `
+                <div class="board-column">
+                    <div class="board-column-title">${status_title}</div>
+                        <div class="board-column-content" id="board-${board_id}-column-${status_id}">
+                    </div>
+                </div>
+            `;
+
+        return columnElement
+    },
+
+    generateBoardHtml: function (board_id, board_title, columnList) {
+
+        let boardElement = `
+        <section class="board" data-board-id="${board_id}">
+            <div class="board-header"><span class="board-title">${board_title}</span>
+                <button class="board-add add-card">Add Card</button>
+                <button class="board-add add-column" value="/new-column/${board_id}">Add Column</button>
+                <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+            </div>
+        <div class="board-columns" id="board-column-${board_id}">
+            ${columnList}
+        </div>
+         </section>
+        `;
+
+        return boardElement
     }
 };
