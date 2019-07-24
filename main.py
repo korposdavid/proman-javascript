@@ -71,6 +71,14 @@ def add_new_column_to_board(board_id: int):
     return {"board_id": board_id, "status_id": status["id"], "status_title": status["title"]}
 
 
+@app.route("/new-card/<int:board_id>")
+@json_response
+def add_new_card_to_board(board_id: int):
+    card_order = data_handler.get_card_order(board_id, 0) + 1
+    data_handler.add_new_card(board_id, card_order)
+    return data_handler.get_newest_card()
+
+
 def main():
     app.run(debug=True)
 
