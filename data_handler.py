@@ -79,3 +79,34 @@ def add_connection_to_boards_statuses(cursor, board_id, status_id):
                    ''',
                    {'board_id': board_id,
                     'status_id': status_id})
+
+
+@connection.connection_handler
+def add_new_card(cursor, board_id, card_order):
+    cursor.execute('''
+                    INSERT INTO cards (board_id, title, status_id, card_order)
+                    VALUES (%(board_id)s, 'new card', 0, %(card_order)s);
+    ''', {'board_id': board_id,
+          'card_order': card_order})
+
+
+@connection.connection_handler
+def get_card_order(cursor, board_id, status_id):
+    cursor.execute('''
+                    SELECT card_order FROM cards
+                    WHERE board_id = %(board_id)s AND status_id = %(status_id)s
+                    ORDER BY card_order DESC LIMIT 1;
+    ''', {'board_id': board_id,
+          'status_id': status_id})
+    result = cursor.fetchone()
+    return result['card_order']
+
+
+@connection.connection_handler
+def get_newest_card(cursor):
+    cursor.execute('''
+                    SELECT * FROM cards
+                    ORDER BY id DESC LIMIT 1;
+    ''')
+    result = cursor.fetchall()
+    return result
