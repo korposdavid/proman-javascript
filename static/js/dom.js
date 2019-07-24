@@ -97,24 +97,32 @@ export let dom = {
 
     },
     addNewColumnButtons: function () {
-        let newColButtons = document.getElementsByClassName("add-column")
+        let newColButtons = document.getElementsByClassName("add-column");
         for (let button of newColButtons) {
             button.addEventListener('click', function () {
-                let request = new XMLHttpRequest();
-                request.open("GET", button.value, true);
-                request.send();
-                request.onload = function () {
-                    let response = JSON.parse(request.response);
-                    dom.showColumns([{'id': response.status_id, 'title': response.status_title}], response.board_id);
+                let columnCount = button.parentElement.parentElement.childNodes[3].childElementCount;
+                let maxColumnCount = 8;
+                if (columnCount < maxColumnCount ) {
+                    let request = new XMLHttpRequest();
+                    request.open("GET", button.value, true);
+                    request.send();
+                    request.onload = function () {
+                        let response = JSON.parse(request.response);
+                        dom.showColumns([{'id': response.status_id, 'title': response.status_title}], response.board_id);
+                    }
+                } else {
+                    button.disabled = true;
                 }
             })
         }
+    },
+    checkNumberOfColumns: function (button) {
+
     },
     // here comes more features
     newBoardBtn: function () {
         let button = document.getElementById('new-board');
         button.addEventListener('click', function () {
-
             let request = new XMLHttpRequest();
             request.open('GET', '/new-board', true)
             request.send();
