@@ -86,5 +86,5 @@ INSERT INTO public.boards_statuses (board_id, status_id) VALUES (2, 4);
 
 
 SELECT setval('boards_id_seq', 2, true);
-SELECT setval('cards_id_seq', 11, true);
+SELECT setval('cards_id_seq', 12, true);
 SELECT setval('statuses_id_seq', 4, true);
