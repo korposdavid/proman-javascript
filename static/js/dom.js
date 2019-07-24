@@ -167,7 +167,7 @@ export let dom = {
         let boardElement = `
         <section class="board" data-board-id="${board_id}">
             <div class="board-header"><span class="board-title">${board_title}</span>
-                <button class="board-add add-card">Add Card</button>
+                <button class="board-add add-card" value="/new-card/${board_id}">Add Card</button>
                 <button class="board-add add-column" value="/new-column/${board_id}">Add Column</button>
                 <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
             </div>
@@ -178,7 +178,8 @@ export let dom = {
         `;
 
         return boardElement
-    }
+    },
+
     addNewCardButtons: function () {
         let newCardButtons = document.getElementsByClassName("add-card");
         for (let button of newCardButtons) {

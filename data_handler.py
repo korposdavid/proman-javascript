@@ -143,7 +143,10 @@ def get_card_order(cursor, board_id, status_id):
     ''', {'board_id': board_id,
           'status_id': status_id})
     result = cursor.fetchone()
+    if result == None:
+        return -1
     return result['card_order']
+
 
 
 @connection.connection_handler
