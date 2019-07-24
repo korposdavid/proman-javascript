@@ -56,6 +56,50 @@ def get_columns_for_board_id(cursor, board_id):
 
 
 @connection.connection_handler
+def add_new_board(cursor):
+    cursor.execute('''
+                   INSERT INTO boards (title)
+                   VALUES ('New Board')
+                   ''')
+
+
+@connection.connection_handler
+def add_new_board_statuses(cursor, board_id, status_id):
+    cursor.execute('''
+                   INSERT INTO boards_statuses (board_id, status_id)
+                   VALUES (%(board_id)s, %(status_id)s)
+                   ''',
+                   {'board_id': board_id,
+                    'status_id': status_id})
+
+
+@connection.connection_handler
+def get_latest_board_id(cursor):
+    cursor.execute('''
+                   SELECT id
+                   FROM boards
+                   ORDER BY id DESC LIMIT 1
+                   ''')
+    result = cursor.fetchone()
+    return result['id']
+
+
+@connection.connection_handler
+def get_board_by_board_id(cursor, board_id):
+    cursor.execute('''
+                    SELECT board_id, status_id, b.title as board_title, s.title as status_title from boards as b
+                    JOIN boards_statuses on b.id = boards_statuses.board_id
+                    JOIN statuses s on boards_statuses.status_id = s.id
+                    WHERE b.id = %(board_id)s
+                   ''',
+                   {'board_id': board_id})
+
+    result = cursor.fetchall()
+    return result
+
+
+
+@connection.connection_handler
 def add_new_status_to_db(cursor):
     cursor.execute('''
                    INSERT INTO statuses (title) VALUES ('new column');
