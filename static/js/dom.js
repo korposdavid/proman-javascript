@@ -28,6 +28,7 @@ export let dom = {
             for (let board of boards) {
                 dom.loadColumns(board.id);
             }
+            dom.editContent();
         });
     },
     showBoards: function (boards) {
@@ -39,7 +40,8 @@ export let dom = {
         for (let board of boards) {
             boardList += `
                 <section class="board" data-board-id="${board.id}">
-                    <div class="board-header"><span class="board-title">${board.title}</span>
+                    <div class="board-header"><span class="board-title" contenteditable="true" data-name="text">${board.title}</span>
+                        
                         <button class="board-add">Add Card</button>
                         <button class="board-add">Add Column</button>
                         <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
@@ -74,7 +76,7 @@ export let dom = {
         for (let column of columns) {
             columnList += `
                 <div class="board-column">
-                    <div class="board-column-title">${column.title}</div>
+                    <div class="board-column-title" contenteditable="true">${column.title}</div>
                         <div class="board-column-content" id="board-${boardId}-column-${column.id}">
                         </div>
                     </div>
@@ -114,6 +116,36 @@ export let dom = {
 
     hideLoadingContent: function () {
         document.querySelector('#loading').textContent = '';
+    },
 
+    editContent: function () {
+        let titles = document.querySelectorAll('.board-title');
+        titles.addEventListener('keydown', function (event) {
+            let esc = event.which === 27;
+            let enter = event.which === 13;
+            let element = event.target;
+            let text = element.nodeName !== 'INPUT' && element.nodeName !== 'TEXTAREA';
+            let data = {};
+
+            if(text){
+                if(esc){
+                    document.querySelectorAll('.board-title').execCommand('undo');
+                    element.blur();
+                } else if (enter){
+                    data[element.getAttribute('data-name')] = element.innerHTML;
+                    element.blur();
+                    event.preventDefault();
+                }
+            }
+        })
+    },
+
+    hideCards: function () {
+        let toggleBtn = document.getElementsByClassName("board-toggle");
+        toggleBtn.addEventListener('click', function () {
+            let cards = document.getElementsByClassName("board-column");
+            cards.hidden=true;
+        })
     }
+
 };
