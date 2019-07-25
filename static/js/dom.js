@@ -28,6 +28,7 @@ export let dom = {
             for (let board of boards) {
                 dom.loadColumns(board.id);
             }
+            dom.editBoardContent();
         });
     },
     showBoards: function (boards) {
@@ -59,6 +60,7 @@ export let dom = {
                 dom.loadCards(column.id, boardId)
 
             }
+            dom.editColumnContent();
         });
     },
     showColumns: function (columns, boardId) {
@@ -72,7 +74,8 @@ export let dom = {
     loadCards: function (columnId, boardId) {
         // retrieves cards and make s showCards called
         dataHandler.getCardsByBoardId(columnId, boardId, function (cards) {
-            dom.showCards(cards)
+            dom.showCards(cards);
+            dom.editCardContent();
         })
 
     },
@@ -89,7 +92,8 @@ export let dom = {
             cardList += `
                 <div class="card">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                    <div class="card-title">${card.title}</div>
+                    <div class="card-title" data-name="${card.title}" contenteditable="true"
+                    data-url="/rename/card" data-id="${card.id}">${card.title}</div>
                 </div>
             `;
         }
@@ -246,6 +250,65 @@ export let dom = {
 
     hideLoadingContent: function () {
         document.querySelector('#loading').textContent = '';
+    },
 
+    editBoardContent: function () {
+        let titles = document.querySelectorAll('.board-title');
+        dom.editContent(titles)
+    },
+
+    editColumnContent: function () {
+        let titles = document.querySelectorAll('.board-column-title');
+        dom.editContent(titles);
+    },
+
+    editCardContent: function () {
+        let titles = document.querySelectorAll('.card-title');
+        dom.editContent(titles);
+    },
+
+    editContent: function (titles,) {
+        for (let title of titles) {
+            title.addEventListener('focusout', function () {
+                title.innerHTML = title.getAttribute('data-name');
+
+            });
+            title.addEventListener('keydown', function (event) {
+                let esc = event.which === 27;
+                let enter = event.which === 13;
+                let data = {};
+
+                if (esc) {
+                    title.innerHTML = title.getAttribute('data-name');
+                    title.blur();
+
+                } else if (enter) {
+                    data['newTitle'] = title.innerHTML;
+                    data['id'] = title.getAttribute('data-id');
+                    event.preventDefault();
+
+                    let request = new XMLHttpRequest();
+                    let URL = title.getAttribute('data-url');
+                    request.open('POST', URL, true);
+                    request.setRequestHeader("Content-type", 'application/json');
+                    request.send(JSON.stringify(data));
+
+                    request.onload = function () {
+                        title.setAttribute('data-name', title.innerHTML);
+                        title.blur();
+                    }
+                }
+            })
+        }
+    },
+
+    hideCards: function () {
+        let toggleBtn = document.getElementsByClassName("board-toggle");
+        for (let btn of toggleBtn) {
+            btn.addEventListener('click', function () {
+                let cards = document.getElementsByClassName("board-column");
+                cards.hidden = true;
+            })
+        }
     }
 };
