@@ -79,7 +79,7 @@ export let dom = {
             columnList += `
                 <div class="board-column">
                     <div class="board-column-title" contenteditable="true" data-name="${column.title}"
-                    data-url="/rename/column/${column.id}">${column.title}</div>
+                    data-url="/rename/column" data-id="${column.id}">${column.title}</div>
                         <div class="board-column-content" id="board-${boardId}-column-${column.id}">
                         </div>
                     </div>
@@ -110,7 +110,7 @@ export let dom = {
                 <div class="card">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title" data-name="${card.title}" contenteditable="true"
-                    data-url="/rename/card/${card.id}">${card.title}</div>
+                    data-url="/rename/card" data-id="${card.id}">${card.title}</div>
                 </div>
             `;
         }
