@@ -60,6 +60,8 @@ def rename_column():
     data = json.loads(request.data)
     id = data['id']
     new_title = data['newTitle']
+    print(id)
+    print(new_title)
 
     return data_handler.rename_column_by_id(id, new_title)
 

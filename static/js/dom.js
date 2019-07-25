@@ -70,6 +70,7 @@ export let dom = {
             columnList += dom.generateColumnHtml(boardId, column.id, column.title);
         }
         this._appendToElement(document.querySelector('#board-column-' + boardId.toString()), columnList)
+        dom.editColumnContent();
     },
     loadCards: function (columnId, boardId) {
         // retrieves cards and make s showCards called
@@ -143,6 +144,7 @@ export let dom = {
 
                 let container = document.querySelector('.board-container');
                 container.insertAdjacentHTML('beforeend', newBoardHtml);
+                dom.editBoardContent();
 
                 // Added event listeners to new boards, added an id for Add Card & Add Column in generateBoardHtml()
                 // to be able to refer to them directly.
@@ -155,8 +157,9 @@ export let dom = {
                     request.send();
                     request.onload = function () {
                         let card = JSON.parse(request.response);
-                        let cardHtml = dom.generateCardHtml(card[0].title);
-                        dom.insertNewCard(card[0].board_id, card[0].status_id, cardHtml)
+                        let cardHtml = dom.generateCardHtml(card[0].title, card[0].id);
+                        dom.insertNewCard(card[0].board_id, card[0].status_id, cardHtml);
+                        dom.editCardContent()
                     }
                 });
 
@@ -190,7 +193,8 @@ export let dom = {
 
         let columnElement = `
                 <div class="board-column">
-                    <div class="board-column-title">${status_title}</div>
+                    <div class="board-column-title" contenteditable="true" data-name="${status_title}"
+                    data-url="/rename/column" data-id="${status_id}">${status_title}</div>
                         <div class="board-column-content" id="board-${board_id}-column-${status_id}">
                     </div>
                 </div>
@@ -203,7 +207,8 @@ export let dom = {
 
         let boardElement = `
         <section class="board" data-board-id="${board_id}">
-            <div class="board-header"><span class="board-title">${board_title}</span>
+            <div class="board-header"><span class="board-title" contenteditable="true" data-name="${board_title}"
+                    data-url="/rename/board" data-id="${board_id}">${board_title}</span>
                 <button class="board-add add-card" value="/new-card/${board_id}" id="new-card-${board_id}">Add Card</button>
                 <button class="board-add add-column" value="/new-column/${board_id}" id="new-column-${board_id}">Add Column</button>
                 <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
@@ -226,18 +231,20 @@ export let dom = {
                 request.send();
                 request.onload = function () {
                     let card = JSON.parse(request.response);
-                    let cardHtml = dom.generateCardHtml(card[0].title);
-                    dom.insertNewCard(card[0].board_id, card[0].status_id, cardHtml)
+                    let cardHtml = dom.generateCardHtml(card[0].title, card[0].id);
+                    dom.insertNewCard(card[0].board_id, card[0].status_id, cardHtml);
+                    dom.editCardContent()
                 }
             })
         }
     },
 
-    generateCardHtml: function (title) {
+    generateCardHtml: function (title, id) {
         return `
                 <div class="card">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                    <div class="card-title">${title}</div>
+                    <div class="card-title" contenteditable="true" data-name="${title}"
+                    data-url="/rename/card" data-id="${id}">${title}</div>
                 </div>
             `;
     },
