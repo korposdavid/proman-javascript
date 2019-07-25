@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, json
 from util import json_response
 
 import data_handler
@@ -42,6 +42,39 @@ def get_columns_for_board(board_id: int):
     :param board_id: id of the parent board
     """
     return data_handler.get_columns_for_board_id(board_id)
+
+
+@app.route("/rename/board", methods=['POST'])
+@json_response
+def rename_board():
+    data = json.loads(request.data)
+    id = data['id']
+    new_title = data['newTitle']
+
+    return data_handler.rename_board_by_id(id, new_title)
+
+
+@app.route("/rename/column", methods=['POST'])
+@json_response
+def rename_column():
+    data = json.loads(request.data)
+    id = data['id']
+    new_title = data['newTitle']
+    print(id)
+    print(new_title)
+
+    return data_handler.rename_column_by_id(id, new_title)
+
+
+@app.route("/rename/card", methods=['POST'])
+@json_response
+def rename_card():
+    data = json.loads(request.data)
+    id = data['id']
+    new_title = data['newTitle']
+
+    return data_handler.rename_card_by_id(id, new_title)
+
 
 
 @app.route("/new-board")
