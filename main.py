@@ -74,6 +74,14 @@ def rename_card():
     return data_handler.rename_card_by_id(id, new_title)
 
 
+@app.route("/move-card", methods=['POST'])
+@json_response
+def move_card():
+    data = json.loads(request.data)
+    print(data)
+
+    return data_handler.move_card(data['card-id'], data['new-board'], data['new-column'])
+
 
 @app.route("/new-board")
 @json_response

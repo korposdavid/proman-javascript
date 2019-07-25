@@ -100,12 +100,11 @@ def get_board_by_board_id(cursor, board_id):
     return result
 
 
-
 @connection.connection_handler
 def add_new_status_to_db(cursor):
     cursor.execute('''
                    INSERT INTO statuses (title) VALUES ('new column');
-                   ''',)
+                   ''', )
 
 
 @connection.connection_handler
@@ -160,7 +159,6 @@ def get_newest_card(cursor):
     return result
 
 
-
 @connection.connection_handler
 def rename_board_by_id(cursor, board_id, new_title):
     cursor.execute('''
@@ -192,3 +190,16 @@ def rename_card_by_id(cursor, card_id, new_title):
                    ''',
                    {'card_id': card_id,
                     'new_title': new_title})
+
+
+@connection.connection_handler
+def move_card(cursor, card_id, new_board, new_column):
+    cursor.execute('''
+                   UPDATE cards
+                   SET board_id = %(new_board)s, 
+                       status_id = %(new_column)s
+                   WHERE id = %(card_id)s
+                   ''',
+                   {'card_id': card_id,
+                    'new_board': new_board,
+                    'new_column': new_column})

@@ -19,6 +19,7 @@ export let dom = {
     },
     init: function () {
         // This function should run once, when the page is loaded.
+        dom.initDragDrop();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -99,7 +100,7 @@ export let dom = {
             boardId = card.board_id;
             statusId = card.status_id;
             cardList += `
-                <div class="card">
+                <div class="card" draggable="true">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title" data-name="${card.title}" contenteditable="true"
                     data-url="/rename/card" data-id="${card.id}">${card.title}</div>
@@ -198,7 +199,7 @@ export let dom = {
     generateColumnHtml: function (board_id, status_id, status_title) {
 
         let columnElement = `
-                <div class="board-column">
+                <div class="board-column" data-id="${status_id}">
                     <div class="board-column-title" contenteditable="true" data-name="${status_title}"
                     data-url="/rename/column" data-id="${status_id}">${status_title}</div>
                         <div class="board-column-content" id="board-${board_id}-column-${status_id}">
@@ -220,7 +221,7 @@ export let dom = {
                 <span class="hover-text">Maximum column number reached!</span>
                 <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
             </div>
-        <div class="board-columns" id="board-column-${board_id}">
+        <div class="board-columns" id="board-column-${board_id}" data-board-id="${board_id}">
             ${columnList}
         </div>
          </section>
@@ -248,7 +249,7 @@ export let dom = {
 
     generateCardHtml: function (title, id) {
         return `
-                <div class="card">
+                <div class="card" draggable="true">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title" contenteditable="true" data-name="${title}"
                     data-url="/rename/card" data-id="${id}">${title}</div>
@@ -315,7 +316,6 @@ export let dom = {
             })
         }
     },
-
     hideCards: function () {
         let toggleBtn = document.getElementsByClassName("board-toggle");
         for (let btn of toggleBtn) {
@@ -324,5 +324,73 @@ export let dom = {
                 cards.hidden = true;
             })
         }
+    },
+    initDragDrop: function() {
+        dom.dragDropDragEnd();
+        dom.dragDropDragEnter();
+        dom.dragDropDragLeave();
+        dom.dragDropDragOver();
+        dom.dragDropDragStart();
+        dom.dragDropDrop();
+    },
+    dragDropDrop: function () {
+        document.addEventListener("drop", function (event) {
+            event.preventDefault();
+            let cardId = event.dataTransfer.getData("text/plain");
+            let movedCard = document.querySelector(`.card-title[data-id=${cardId}]`).parentNode;
+            let newColumn = event.target.dataset["id"];
+            let newBoard = event.target.parentElement.dataset["boardId"];
+            if (event.target.getAttribute('class') === "board-column") {
+                //remove from old place, add to new place
+                movedCard.parentNode.removeChild(movedCard);
+                event.target.children[1].appendChild(movedCard);
+                event.target.style.background = "";
+                dom.sendMoveToServer(cardId, newColumn, newBoard);
+            }
+        }, false);
+    },
+    dragDropDragEnter: function () {
+        document.addEventListener("dragenter", function (event) {
+            // highlight potential drop target when the draggable element enters it
+            if (event.target.getAttribute('class') === "board-column") {
+                event.target.style.background = "lightgray";
+            }
+        }, false);
+    },
+    dragDropDragLeave: function () {
+        document.addEventListener("dragleave", function (event) {
+            // reset background of potential drop target when the draggable element leaves it
+            if (event.target.getAttribute('class') === "board-column") {
+                event.target.style.background = "";
+            }
+        }, false);
+    },
+    dragDropDragEnd: function () {
+        document.addEventListener("dragend", function (event) {
+            event.target.style.opacity = "";
+        }, false);
+    },
+    dragDropDragOver: function () {
+        document.addEventListener("dragover", function (event) {
+            // prevent default to allow drop
+            event.preventDefault();
+        }, false);
+    },
+    dragDropDragStart: function () {
+        document.addEventListener("dragstart", function (event) {
+            let draggedId = event.target.lastElementChild.getAttribute("data-id");
+            event.target.style.opacity = .5;
+            event.dataTransfer.setData("text/plain", JSON.stringify(draggedId));
+        }, false);
+    },
+    sendMoveToServer: function(cardId, newColumn, newBoard) {
+        let data = {};
+        data['new-column'] = newColumn;
+        data['card-id'] = cardId.replace('"','').replace('"','');
+        data['new-board'] = newBoard;
+        let request = new XMLHttpRequest();
+        request.open('POST', '/move-card', true);
+        request.setRequestHeader("Content-type", 'application/json');
+        request.send(JSON.stringify(data));
     }
 };
