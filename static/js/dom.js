@@ -202,6 +202,7 @@ export let dom = {
             <div class="board-header"><span class="board-title">${board_title}</span>
                 <button class="board-add add-card" value="/new-card/${board_id}" id="new-card-${board_id}">Add Card</button>
                 <button class="board-add add-column" value="/new-column/${board_id}" id="new-column-${board_id}">Add Column</button>
+                <span class="hover-text">Maximum column number reached!</span>
                 <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
             </div>
         <div class="board-columns" id="board-column-${board_id}">
