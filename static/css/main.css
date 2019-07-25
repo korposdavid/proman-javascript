@@ -131,3 +131,6 @@ section.board{
 #new-board{
     margin-left: 46%;
 }
+button:disabled {
+    background: darkgray;
+}

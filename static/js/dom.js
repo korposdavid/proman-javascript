@@ -56,12 +56,20 @@ export let dom = {
         dataHandler.getColumns(boardId, function (columns) {
             dom.showColumns(columns, boardId);
             for (let column of columns) {
-
                 dom.loadCards(column.id, boardId)
-
             }
             dom.editColumnContent();
         });
+    },
+    disableColumnAdders: function () {
+        let newColButtons = document.getElementsByClassName("add-column");
+        for (let button of newColButtons) {
+            let columnCount = button.parentElement.parentElement.childNodes[3].childElementCount;
+            let maxColumnCount = 8;
+            if (columnCount >= maxColumnCount){
+                button.disabled = true;
+            }
+        }
     },
     showColumns: function (columns, boardId) {
         let columnList = '';
@@ -98,8 +106,8 @@ export let dom = {
                 </div>
             `;
         }
-        this._appendToElement(document.querySelector('#board-' + boardId.toString() + '-column-' + statusId.toString()), cardList)
-
+        this._appendToElement(document.querySelector('#board-' + boardId.toString() + '-column-' + statusId.toString()), cardList);
+        dom.disableColumnAdders();
     },
     addNewColumnButtons: function () {
         let newColButtons = document.getElementsByClassName("add-column");
@@ -117,15 +125,13 @@ export let dom = {
                             'id': response.status_id,
                             'title': response.status_title
                         }], response.board_id);
-                    }
-                } else {
-                    button.disabled = true;
+                        columnCount = button.parentElement.parentElement.childNodes[3].childElementCount;
+                        if  (columnCount >= maxColumnCount) {
+                            button.disabled = true;
+                    }}
                 }
             })
         }
-    },
-    checkNumberOfColumns: function (button) {
-
     },
     // here comes more features
     newBoardBtn: function () {
@@ -209,7 +215,7 @@ export let dom = {
         <section class="board" data-board-id="${board_id}">
             <div class="board-header"><span class="board-title" contenteditable="true" data-name="${board_title}"
                     data-url="/rename/board" data-id="${board_id}">${board_title}</span>
-                <button class="board-add add-card" value="/new-card/${board_id}" id="new-card-${board_id}">Add Card</button>
+                <button class="board-add add-card" value="/new-card/${board_id}" id="new-card-${board_id}" id="new-card-${board_id}">Add Card</button>
                 <button class="board-add add-column" value="/new-column/${board_id}" id="new-column-${board_id}">Add Column</button>
                 <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
             </div>
