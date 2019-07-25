@@ -102,16 +102,19 @@ export let dom = {
             button.addEventListener('click', function () {
                 let columnCount = button.parentElement.parentElement.childNodes[3].childElementCount;
                 let maxColumnCount = 8;
-                if (columnCount < maxColumnCount ) {
+                if (columnCount < maxColumnCount) {
                     let request = new XMLHttpRequest();
                     request.open("GET", button.value, true);
                     request.send();
                     request.onload = function () {
                         let response = JSON.parse(request.response);
-                        dom.showColumns([{'id': response.status_id, 'title': response.status_title}], response.board_id);
+                        dom.showColumns([{
+                            'id': response.status_id,
+                            'title': response.status_title
+                        }], response.board_id);
                     }
                 } else {
-                    button.disabled = true;
+                    button.remove();
                 }
             })
         }
@@ -135,7 +138,45 @@ export let dom = {
                 let newBoardHtml = dom.generateBoardHtml(columnsData[0].board_id, columnsData[0].board_title, columnList)
 
                 let container = document.querySelector('.board-container');
-                container.insertAdjacentHTML('beforeend', newBoardHtml)
+                container.insertAdjacentHTML('beforeend', newBoardHtml);
+
+                // Added event listeners to new boards, added an id for Add Card & Add Column in generateBoardHtml()
+                // to be able to refer to them directly.
+
+                let cardButtonId = 'new-card-' + columnsData[0].board_id;
+                let cardButton = document.getElementById(cardButtonId);
+                cardButton.addEventListener('click', function () {
+                    let request = new XMLHttpRequest();
+                    request.open("GET", cardButton.value, true);
+                    request.send();
+                    request.onload = function () {
+                        let card = JSON.parse(request.response);
+                        let cardHtml = dom.generateCardHtml(card[0].title);
+                        dom.insertNewCard(card[0].board_id, card[0].status_id, cardHtml)
+                    }
+                });
+
+                let columnButtonId = 'new-column-' + columnsData[0].board_id;
+                let columnButton = document.getElementById(columnButtonId);
+                columnButton.addEventListener('click', function () {
+                let columnCount = columnButton.parentElement.parentElement.childNodes[3].childElementCount;
+                let maxColumnCount = 8;
+                if (columnCount < maxColumnCount) {
+                    let request = new XMLHttpRequest();
+                    request.open("GET", columnButton.value, true);
+                    request.send();
+                    request.onload = function () {
+                        let response = JSON.parse(request.response);
+                        dom.showColumns([{
+                            'id': response.status_id,
+                            'title': response.status_title
+                        }], response.board_id);
+                    }
+                } else {
+                    columnButton.disabled = true;
+                }
+            })
+
             }
 
         })
@@ -154,13 +195,13 @@ export let dom = {
         return columnElement
     },
 
-    generateBoardHtml: function (board_id, board_title, columnList="") {
+    generateBoardHtml: function (board_id, board_title, columnList = "") {
 
         let boardElement = `
         <section class="board" data-board-id="${board_id}">
             <div class="board-header"><span class="board-title">${board_title}</span>
-                <button class="board-add add-card" value="/new-card/${board_id}">Add Card</button>
-                <button class="board-add add-column" value="/new-column/${board_id}">Add Column</button>
+                <button class="board-add add-card" value="/new-card/${board_id}" id="new-card-${board_id}">Add Card</button>
+                <button class="board-add add-column" value="/new-column/${board_id}" id="new-column-${board_id}">Add Column</button>
                 <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
             </div>
         <div class="board-columns" id="board-column-${board_id}">
