@@ -114,7 +114,7 @@ export let dom = {
                         }], response.board_id);
                     }
                 } else {
-                    button.remove();
+                    button.disabled = true;
                 }
             })
         }
