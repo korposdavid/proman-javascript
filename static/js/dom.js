@@ -30,6 +30,7 @@ export let dom = {
                 dom.loadColumns(board.id);
             }
             dom.editBoardContent();
+            dom.hideCards();
         });
     },
     showBoards: function (boards) {
@@ -78,11 +79,11 @@ export let dom = {
         for (let column of columns) {
             columnList += dom.generateColumnHtml(boardId, column.id, column.title);
         }
-        this._appendToElement(document.querySelector('#board-column-' + boardId.toString()), columnList)
+        this._appendToElement(document.querySelector('#board-column-' + boardId.toString()), columnList);
         dom.editColumnContent();
     },
     loadCards: function (columnId, boardId) {
-        // retrieves cards and make s showCards called
+        // retrieves cards and makes showCards called
         dataHandler.getCardsByBoardId(columnId, boardId, function (cards) {
             dom.showCards(cards);
             dom.editCardContent();
@@ -139,7 +140,7 @@ export let dom = {
         let button = document.getElementById('new-board');
         button.addEventListener('click', function () {
             let request = new XMLHttpRequest();
-            request.open('GET', '/new-board', true)
+            request.open('GET', '/new-board', true);
             request.send();
             request.onload = function () {
                 let columnList = '';
@@ -147,7 +148,7 @@ export let dom = {
                 for (let column of columnsData) {
                     columnList += dom.generateColumnHtml(column.board_id, column.status_id, column.status_title);
                 }
-                let newBoardHtml = dom.generateBoardHtml(columnsData[0].board_id, columnsData[0].board_title, columnList)
+                let newBoardHtml = dom.generateBoardHtml(columnsData[0].board_id, columnsData[0].board_title, columnList);
 
                 let container = document.querySelector('.board-container');
                 container.insertAdjacentHTML('beforeend', newBoardHtml);
@@ -219,7 +220,7 @@ export let dom = {
                 <button class="board-add add-card" value="/new-card/${board_id}" id="new-card-${board_id}" id="new-card-${board_id}">Add Card</button>
                 <button class="board-add add-column" value="/new-column/${board_id}" id="new-column-${board_id}">Add Column</button>
                 <span class="hover-text">Maximum column number reached!</span>
-                <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                <button class="board-toggle" data-board-number="board-column-${board_id}"><i class="fas fa-chevron-down"></i></button>
             </div>
         <div class="board-columns" id="board-column-${board_id}" data-board-id="${board_id}">
             ${columnList}
@@ -320,8 +321,12 @@ export let dom = {
         let toggleBtn = document.getElementsByClassName("board-toggle");
         for (let btn of toggleBtn) {
             btn.addEventListener('click', function () {
-                let cards = document.getElementsByClassName("board-column");
-                cards.hidden = true;
+                const parentBoardId = btn.dataset.boardNumber;
+                const parentBoard = document.getElementById(parentBoardId);
+                const columnsToHide = parentBoard.querySelectorAll('.board-column');
+                for(let column of columnsToHide){
+                    column.hidden = column.hidden === false ? true : false;
+                }
             })
         }
     },
