@@ -2,13 +2,16 @@ DROP TABLE IF EXISTS public.cards;
 DROP TABLE IF EXISTS public.boards_statuses;
 DROP TABLE IF EXISTS public.statuses;
 DROP TABLE IF EXISTS public.boards;
+DROP TABLE IF EXISTS public.users;
 DROP SEQUENCE IF EXISTS public.boards_id_seq;
 DROP SEQUENCE IF EXISTS public.cards_id_seq;
 DROP SEQUENCE IF EXISTS public.statuses_id_seq;
 
 CREATE TABLE public.boards (
     id SERIAL NOT NULL,
-    title character varying
+    title character varying,
+    user_id integer
+
 );
 
 CREATE TABLE public.cards (
@@ -16,7 +19,8 @@ CREATE TABLE public.cards (
     board_id integer,
     title character varying,
     status_id integer DEFAULT 0,
-    card_order integer
+    card_order integer,
+    user_id integer
 );
 
 CREATE TABLE public.statuses (
@@ -24,8 +28,15 @@ CREATE TABLE public.statuses (
     title character varying
 );
 
+CREATE TABLE public.users (
+    id SERIAL PRIMARY KEY,
+    user_name character varying NOT NULL UNIQUE,
+    password character varying NOT NULL
+);
+
 ALTER TABLE ONLY public.boards
-    ADD CONSTRAINT boards_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT boards_pkey PRIMARY KEY (id),
+    ADD CONSTRAINT boards_users_fk FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 ALTER TABLE ONLY public.cards
@@ -37,7 +48,8 @@ ALTER TABLE ONLY public.statuses
 
 
 ALTER TABLE ONLY public.cards
-    ADD CONSTRAINT cards_boards__fk FOREIGN KEY (board_id) REFERENCES public.boards(id);
+    ADD CONSTRAINT cards_boards__fk FOREIGN KEY (board_id) REFERENCES public.boards(id) ON DELETE CASCADE,
+    ADD CONSTRAINT cards_users__fk FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 ALTER TABLE ONLY public.cards
@@ -50,7 +62,7 @@ CREATE TABLE public.boards_statuses (
 			references boards,
 	status_id integer
 		constraint boards_statuses_statuses__fk
-			references statuses
+			references statuses ON DELETE CASCADE
 );
 
 INSERT INTO public.boards (id, title) VALUES (1, 'Board 1');
