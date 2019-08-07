@@ -1,10 +1,13 @@
 from flask import Flask, render_template, url_for, request, json, jsonify, session
 from util import json_response
 import util
+import os
 
 import data_handler
 
 app = Flask(__name__)
+
+app.secret_key = os.environ.get('secret_key')
 
 
 @app.route("/")
@@ -130,13 +133,16 @@ def registration():
         return {'invalid': True}
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        hash = data_handler.get_hash_by_username(request.form['username'])
-        if hash and util.verify_password(request.form['password'], hash):
-            session['username'] = request.form['username']
-            session['user_id'] = data_handler.get_user_id_by_username(session['username'])
+    data = json.loads(request.data)
+    hashed_pw = data_handler.get_hash_by_username(data['username'])
+    if hashed_pw and util.verify_password(data['password'], hashed_pw):
+        session['username'] = data['username']
+        session['user_id'] = data_handler.get_user_id_by_username(session['username'])
+        return session['username']
+    else:
+        return {'invalid': True}
 
 
 def main():

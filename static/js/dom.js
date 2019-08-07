@@ -32,6 +32,7 @@ export let dom = {
             dom.editBoardContent();
             dom.hideCards();
             dom.registration();
+            dom.login();
         });
     },
     showBoards: function (boards) {
@@ -405,8 +406,8 @@ export let dom = {
         submitBtn.addEventListener('click', function () {
 
             const data = {
-                'username': document.querySelector('#username').value,
-                'password': document.querySelector('#password').value
+                'username': document.querySelector('#registrationUsername').value,
+                'password': document.querySelector('#registrationPassword').value
             };
             let request = new XMLHttpRequest();
             request.addEventListener('load', function () {
@@ -414,15 +415,36 @@ export let dom = {
                 if (responseData.invalid) {
                     alert('Sorry, that username is already taken!');
                 }
-                document.querySelector('#username').value = '';
-                document.querySelector('#password').value = '';
             });
 
             request.open('POST', '/registration', true);
             request.setRequestHeader('Content-type', 'application/json');
             request.send(JSON.stringify(data));
-
+            document.querySelector('#registrationUsername').value = '';
+            document.querySelector('#registrationPassword').value = '';
         })
+    },
+    login: function () {
+        const submitBtn = document.querySelector('#loginSubmit');
+        submitBtn.addEventListener('click', function () {
 
+            const data = {
+                'username': document.querySelector('#loginUsername').value,
+                'password': document.querySelector('#loginPassword').value
+            };
+            let request = new XMLHttpRequest();
+            request.addEventListener('load', function () {
+                const responseData = JSON.parse(request.response);
+                if (responseData.invalid) {
+                    alert('Sorry, wrong username or password');
+                }
+            });
+
+            request.open('POST', '/login', true);
+            request.setRequestHeader('Content-type', 'application/json');
+            request.send(JSON.stringify(data));
+            document.querySelector('#loginUsername').value = '';
+            document.querySelector('#loginPassword').value = '';
+        })
     }
 };
