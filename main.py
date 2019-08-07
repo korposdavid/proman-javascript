@@ -122,7 +122,7 @@ def add_new_card_to_board(board_id: int):
 @json_response
 def registration():
     data = json.loads(request.data)
-    username = data['username'].replace("''", '')
+    username = data['username']
     password = util.hash_password(data['password'])
     try:
         return data_handler.register(username, password)
