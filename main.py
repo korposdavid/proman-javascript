@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, request, json
 from util import json_response
+import util
 
 import data_handler
 
@@ -116,6 +117,16 @@ def add_new_card_to_board(board_id: int):
     card_order = data_handler.get_card_order(board_id, 0) + 1
     data_handler.add_new_card(board_id, card_order)
     return data_handler.get_newest_card()
+
+
+@app.route('/registration')
+@json_response
+def registration():
+    data = json.loads(request.data)
+    username = data['username']
+    password = util.hash_password(data['password'])
+
+
 
 
 def main():

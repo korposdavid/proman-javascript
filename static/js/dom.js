@@ -68,7 +68,7 @@ export let dom = {
         for (let button of newColButtons) {
             let columnCount = button.parentElement.parentElement.childNodes[3].childElementCount;
             let maxColumnCount = 8;
-            if (columnCount >= maxColumnCount){
+            if (columnCount >= maxColumnCount) {
                 button.disabled = true;
             }
         }
@@ -128,9 +128,10 @@ export let dom = {
                             'title': response.status_title
                         }], response.board_id);
                         columnCount = button.parentElement.parentElement.childNodes[3].childElementCount;
-                        if  (columnCount >= maxColumnCount) {
+                        if (columnCount >= maxColumnCount) {
                             button.disabled = true;
-                    }}
+                        }
+                    }
                 }
             })
         }
@@ -174,23 +175,23 @@ export let dom = {
                 let columnButtonId = 'new-column-' + columnsData[0].board_id;
                 let columnButton = document.getElementById(columnButtonId);
                 columnButton.addEventListener('click', function () {
-                let columnCount = columnButton.parentElement.parentElement.childNodes[3].childElementCount;
-                let maxColumnCount = 8;
-                if (columnCount < maxColumnCount) {
-                    let request = new XMLHttpRequest();
-                    request.open("GET", columnButton.value, true);
-                    request.send();
-                    request.onload = function () {
-                        let response = JSON.parse(request.response);
-                        dom.showColumns([{
-                            'id': response.status_id,
-                            'title': response.status_title
-                        }], response.board_id);
+                    let columnCount = columnButton.parentElement.parentElement.childNodes[3].childElementCount;
+                    let maxColumnCount = 8;
+                    if (columnCount < maxColumnCount) {
+                        let request = new XMLHttpRequest();
+                        request.open("GET", columnButton.value, true);
+                        request.send();
+                        request.onload = function () {
+                            let response = JSON.parse(request.response);
+                            dom.showColumns([{
+                                'id': response.status_id,
+                                'title': response.status_title
+                            }], response.board_id);
+                        }
+                    } else {
+                        columnButton.disabled = true;
                     }
-                } else {
-                    columnButton.disabled = true;
-                }
-            })
+                })
 
             }
 
@@ -324,13 +325,13 @@ export let dom = {
                 const parentBoardId = btn.dataset.boardNumber;
                 const parentBoard = document.getElementById(parentBoardId);
                 const columnsToHide = parentBoard.querySelectorAll('.board-column');
-                for(let column of columnsToHide){
+                for (let column of columnsToHide) {
                     column.hidden = column.hidden === false ? true : false;
                 }
             })
         }
     },
-    initDragDrop: function() {
+    initDragDrop: function () {
         dom.dragDropDragEnd();
         dom.dragDropDragEnter();
         dom.dragDropDragLeave();
@@ -388,14 +389,29 @@ export let dom = {
             event.dataTransfer.setData("text/plain", JSON.stringify(draggedId));
         }, false);
     },
-    sendMoveToServer: function(cardId, newColumn, newBoard) {
+    sendMoveToServer: function (cardId, newColumn, newBoard) {
         let data = {};
         data['new-column'] = newColumn;
-        data['card-id'] = cardId.replace('"','').replace('"','');
+        data['card-id'] = cardId.replace('"', '').replace('"', '');
         data['new-board'] = newBoard;
         let request = new XMLHttpRequest();
         request.open('POST', '/move-card', true);
         request.setRequestHeader("Content-type", 'application/json');
         request.send(JSON.stringify(data));
+    },
+    registration: function () {
+        const submitBtn = document.querySelector('#regSubmit');
+        submitBtn.addEventListener('click', function () {
+
+            const data = {
+                'username': document.querySelector('#username').value,
+                'password': document.querySelector('#password').value
+            };
+            let request = new XMLHttpRequest();
+            request.open('POST', '/registration', true);
+            request.setRequestHeader('Content-type', 'application/json');
+            request.send(JSON.stringify(data));
+        })
+
     }
 };
