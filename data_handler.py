@@ -208,8 +208,8 @@ def move_card(cursor, card_id, new_board, new_column):
 @connection.connection_handler
 def register(cursor, username, password):
     cursor.execute('''
-                   INSERT INTO users
-                   VALUES %(username)s, %(password)s;
+                   INSERT INTO users (user_name, password)
+                   VALUES (%(username)s, %(password)s);
                    ''',
                    {'username': username,
                     'password': password})

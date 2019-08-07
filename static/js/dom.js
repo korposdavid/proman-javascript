@@ -31,6 +31,7 @@ export let dom = {
             }
             dom.editBoardContent();
             dom.hideCards();
+            dom.registration();
         });
     },
     showBoards: function (boards) {
@@ -408,9 +409,21 @@ export let dom = {
                 'password': document.querySelector('#password').value
             };
             let request = new XMLHttpRequest();
+            request.addEventListener('load', function () {
+                const responseData = JSON.parse(request.response);
+                if(!responseData){
+                    document.querySelector('#registrationModal').classList.remove('show');
+                    document.body.opacity = 1;
+                } else if (responseData.invalid){
+                    event.preventDefault();
+                    alert('Sorry, that username is already taken!');
+                }
+            });
+
             request.open('POST', '/registration', true);
             request.setRequestHeader('Content-type', 'application/json');
             request.send(JSON.stringify(data));
+
         })
 
     }

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, json
+from flask import Flask, render_template, url_for, request, json, jsonify
 from util import json_response
 import util
 
@@ -118,13 +118,16 @@ def add_new_card_to_board(board_id: int):
     return data_handler.get_newest_card()
 
 
-@app.route('/registration')
+@app.route('/registration', methods=['POST'])
 @json_response
 def registration():
     data = json.loads(request.data)
-    username = data['username']
+    username = data['username'].replace("''", '')
     password = util.hash_password(data['password'])
-    data_handler.register(username, password)
+    try:
+        return data_handler.register(username, password)
+    except:
+        return {'invalid': True}
 
 
 def main():
