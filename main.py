@@ -145,6 +145,12 @@ def login():
         return {'invalid': True}
 
 
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    session.pop('user_id', None)
+    return render_template('index.html')
+
 def main():
     app.run(debug=True)
 
