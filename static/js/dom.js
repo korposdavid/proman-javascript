@@ -411,9 +411,11 @@ export let dom = {
             let request = new XMLHttpRequest();
             request.addEventListener('load', function () {
                 const responseData = JSON.parse(request.response);
-                if (responseData.invalid){
+                if (responseData.invalid) {
                     alert('Sorry, that username is already taken!');
                 }
+                document.querySelector('#username').value = '';
+                document.querySelector('#password').value = '';
             });
 
             request.open('POST', '/registration', true);
