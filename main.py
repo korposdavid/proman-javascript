@@ -79,7 +79,6 @@ def rename_card():
 @json_response
 def move_card():
     data = json.loads(request.data)
-    print(data)
 
     return data_handler.move_card(data['card-id'], data['new-board'], data['new-column'])
 
@@ -125,8 +124,7 @@ def registration():
     data = json.loads(request.data)
     username = data['username']
     password = util.hash_password(data['password'])
-
-
+    data_handler.register(username, password)
 
 
 def main():

@@ -203,3 +203,13 @@ def move_card(cursor, card_id, new_board, new_column):
                    {'card_id': card_id,
                     'new_board': new_board,
                     'new_column': new_column})
+
+
+@connection.connection_handler
+def register(cursor, username, password):
+    cursor.execute('''
+                   INSERT INTO users
+                   VALUES %(username)s, %(password)s;
+                   ''',
+                   {'username': username,
+                    'password': password})
