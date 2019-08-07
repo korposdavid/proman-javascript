@@ -213,3 +213,37 @@ def register(cursor, username, password):
                    ''',
                    {'username': username,
                     'password': password})
+
+
+@connection.connection_handler
+def register(cursor, username, password):
+    cursor.execute('''
+                   INSERT INTO users (user_name, password)
+                   VALUES (%(username)s, %(password)s);
+                   ''',
+                   {'username': username,
+                    'password': password})
+
+
+@connection.connection_handler
+def get_hash_by_username(cursor, username):
+    cursor.execute('''
+                   SELECT password FROM users
+                   WHERE user_name = %(username)s
+                   ''',
+                   {'username': username})
+    result = cursor.fetchone()
+    return result['password']
+
+
+@connection.connection_handler
+def get_user_id_by_username(cursor, username):
+    cursor.execute('''
+                   SELECT id FROM users
+                   WHERE user_name = %(username)s
+                   ''',
+                   {'username': username})
+    result = cursor.fetchone()
+    return result['id']
+
+

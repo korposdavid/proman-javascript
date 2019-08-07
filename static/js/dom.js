@@ -411,11 +411,7 @@ export let dom = {
             let request = new XMLHttpRequest();
             request.addEventListener('load', function () {
                 const responseData = JSON.parse(request.response);
-                if(!responseData){
-                    document.querySelector('#registrationModal').classList.remove('show');
-                    document.body.opacity = 1;
-                } else if (responseData.invalid){
-                    event.preventDefault();
+                if (responseData.invalid){
                     alert('Sorry, that username is already taken!');
                 }
             });
