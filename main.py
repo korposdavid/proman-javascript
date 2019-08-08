@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, json, jsonify, session
+from flask import Flask, render_template, url_for, request, json, jsonify, session, redirect
 from util import json_response
 import util
 import os
@@ -151,7 +151,8 @@ def login():
 def logout():
     session.pop('username', None)
     session.pop('user_id', None)
-    return render_template('index.html')
+    return redirect('/')
+
 
 def main():
     app.run(debug=True)
