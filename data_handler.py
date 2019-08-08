@@ -247,3 +247,12 @@ def get_user_id_by_username(cursor, username):
     return result['id']
 
 
+@connection.connection_handler
+def delete_card(cursor, id):
+    cursor.execute('''
+                   DELETE FROM cards
+                   WHERE id = %(id)s
+                   ''',
+                   {'id': id})
+
+

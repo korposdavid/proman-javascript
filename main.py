@@ -154,6 +154,13 @@ def logout():
     return redirect('/')
 
 
+@app.route('/delete-card', methods=['POST'])
+@json_response
+def delete_card():
+    data = json.loads(request.data)
+    data_handler.delete_card(data['id'])
+
+
 def main():
     app.run(debug=True)
 

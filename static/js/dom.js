@@ -89,6 +89,7 @@ export let dom = {
         dataHandler.getCardsByBoardId(columnId, boardId, function (cards) {
             dom.showCards(cards);
             dom.editCardContent();
+            dom.deleteCards();
         })
 
     },
@@ -103,7 +104,7 @@ export let dom = {
             boardId = card.board_id;
             statusId = card.status_id;
             cardList += `
-                <div class="card" draggable="true">
+                <div class="card" draggable="true" data-id="${card.id}">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title" data-name="${card.title}" contenteditable="true"
                     data-url="/rename/card" data-id="${card.id}">${card.title}</div>
@@ -437,7 +438,7 @@ export let dom = {
                 const responseData = JSON.parse(request.response);
                 if (responseData.invalid) {
                     alert('Sorry, wrong username or password');
-                } else if(responseData.username){
+                } else if (responseData.username) {
                     console.log('Successfully logged in');
                     dom.loggedIn(responseData.username);
                 }
@@ -458,5 +459,22 @@ export let dom = {
                                     href="/logout">Logout</a>
                                     <a class="nav-item nav-link" 
                                     >${response}</a>`);
+    },
+    deleteCards: function () {
+        const delButton = document.querySelectorAll('.fa-trash-alt');
+        for (let button of delButton) {
+            button.addEventListener('click', function () {
+                const cardToDelete = button.closest('.card');
+                const data = {'id': cardToDelete.dataset.id};
+                cardToDelete.remove();
+
+                let request = new XMLHttpRequest();
+
+                request.open('POST', '/delete-card', true);
+                request.setRequestHeader('Content-type', 'application/json');
+                request.send(JSON.stringify(data));
+            })
+        }
+
     }
 };
