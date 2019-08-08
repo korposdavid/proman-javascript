@@ -160,6 +160,7 @@ export let dom = {
                 dom.editBoardContent();
                 dom.deleteBoards();
                 dom.hideCards();
+                dom.deleteCards();
 
                 // Added event listeners to new boards, added an id for Add Card & Add Column in generateBoardHtml()
                 // to be able to refer to them directly.
@@ -250,15 +251,15 @@ export let dom = {
                     let cardHtml = dom.generateCardHtml(card[0].title, card[0].id);
                     dom.insertNewCard(card[0].board_id, card[0].status_id, cardHtml);
                     dom.editCardContent();
-
-                }
+                    dom.deleteCards();
+                };
             })
         }
     },
 
     generateCardHtml: function (title, id) {
         return `
-                <div class="card" draggable="true">
+                <div class="card" draggable="true" data-id="${id}">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title" contenteditable="true" data-name="${title}"
                     data-url="/rename/card" data-id="${id}">${title}</div>
@@ -268,7 +269,7 @@ export let dom = {
 
     insertNewCard: function (board_id, status_id, cardHtml) {
         let board = document.querySelector('#board-' + board_id + '-column-' + status_id);
-        board.insertAdjacentHTML('beforeend', cardHtml)
+        board.insertAdjacentHTML('beforeend', cardHtml);
         dom.deleteCards();
     },
 
