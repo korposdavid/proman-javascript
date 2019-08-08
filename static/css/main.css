@@ -152,3 +152,7 @@ button:disabled {
     background: red;
     visibility: visible;
 }
+
+.fa-trash {
+    margin-right: 100px;
+}

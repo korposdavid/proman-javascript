@@ -256,3 +256,11 @@ def delete_card(cursor, id):
                    {'id': id})
 
 
+@connection.connection_handler
+def delete_board(cursor, id):
+    cursor.execute('''
+                   DELETE FROM boards
+                   WHERE id = %(id)s
+                   ''',
+                   {'id': id})
+

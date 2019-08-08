@@ -161,6 +161,13 @@ def delete_card():
     data_handler.delete_card(data['id'])
 
 
+@app.route('/delete-board', methods=['POST'])
+@json_response
+def delete_board():
+    data = json.loads(request.data)
+    data_handler.delete_board(data['id'])
+
+
 def main():
     app.run(debug=True)
 

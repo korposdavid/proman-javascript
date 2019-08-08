@@ -59,7 +59,7 @@ ALTER TABLE ONLY public.cards
 CREATE TABLE public.boards_statuses (
 	board_id integer
 		constraint "boards_statuses_boards_boards.id_fk"
-			references boards,
+			references boards ON DELETE CASCADE,
 	status_id integer
 		constraint boards_statuses_statuses__fk
 			references statuses ON DELETE CASCADE

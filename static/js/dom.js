@@ -33,6 +33,7 @@ export let dom = {
             dom.hideCards();
             dom.registration();
             dom.login();
+            dom.deleteBoards();
         });
     },
     showBoards: function (boards) {
@@ -224,7 +225,7 @@ export let dom = {
                 <button class="board-add add-card" value="/new-card/${board_id}" id="new-card-${board_id}" id="new-card-${board_id}">Add Card</button>
                 <button class="board-add add-column" value="/new-column/${board_id}" id="new-column-${board_id}">Add Column</button>
                 <span class="hover-text">Maximum column number reached!</span>
-                <button class="board-toggle" data-board-number="board-column-${board_id}"><i class="fas fa-chevron-down"></i></button>
+                <button class="board-toggle" data-board-number="board-column-${board_id}"><i class="fas fa-trash"></i><i class="fas fa-chevron-down"></i></button>
             </div>
         <div class="board-columns" id="board-column-${board_id}" data-board-id="${board_id}">
             ${columnList}
@@ -476,5 +477,24 @@ export let dom = {
             })
         }
 
+    },
+    deleteBoards: function () {
+        const delBoardButton = document.querySelectorAll('.fa-trash');
+        for (let button of delBoardButton) {
+            button.addEventListener('click', function () {
+                const boardToDelete = button.closest('.board');
+                const data = {'id': boardToDelete.dataset.boardId};
+                boardToDelete.remove();
+
+                let request = new XMLHttpRequest();
+
+                request.open('POST', '/delete-board', true);
+                request.setRequestHeader('Content-type', 'application/json');
+                request.send(JSON.stringify(data));
+            })
+        }
+
     }
+
+
 };
