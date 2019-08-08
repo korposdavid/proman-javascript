@@ -437,7 +437,10 @@ export let dom = {
                 const responseData = JSON.parse(request.response);
                 if (responseData.invalid) {
                     alert('Sorry, wrong username or password');
+                } else if(responseData.username){
+                    dom.loggedIn(responseData.username);
                 }
+
             });
 
             request.open('POST', '/login', true);
@@ -446,5 +449,13 @@ export let dom = {
             document.querySelector('#loginUsername').value = '';
             document.querySelector('#loginPassword').value = '';
         })
+    },
+    loggedIn: function (response) {
+        const navBar = document.querySelector('#navbar-content');
+        navBar.innerHTML = '';
+        navBar.insertAdjacentHTML('beforeend', `<a class="nav-item nav-link" 
+                                    href="/logout">Logout</a>
+                                    <a class="nav-item nav-link" 
+                                    >${response}</a>`);
     }
 };

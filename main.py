@@ -140,7 +140,7 @@ def login():
     if hashed_pw and util.verify_password(data['password'], hashed_pw):
         session['username'] = data['username']
         session['user_id'] = data_handler.get_user_id_by_username(session['username'])
-        return session['username']
+        return {'username': session['username']}
     else:
         return {'invalid': True}
 
