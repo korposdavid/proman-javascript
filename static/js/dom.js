@@ -158,6 +158,8 @@ export let dom = {
                 let container = document.querySelector('.board-container');
                 container.insertAdjacentHTML('beforeend', newBoardHtml);
                 dom.editBoardContent();
+                dom.deleteBoards();
+                dom.hideCards();
 
                 // Added event listeners to new boards, added an id for Add Card & Add Column in generateBoardHtml()
                 // to be able to refer to them directly.
@@ -172,7 +174,7 @@ export let dom = {
                         let card = JSON.parse(request.response);
                         let cardHtml = dom.generateCardHtml(card[0].title, card[0].id);
                         dom.insertNewCard(card[0].board_id, card[0].status_id, cardHtml);
-                        dom.editCardContent()
+                        dom.editCardContent();
                     }
                 });
 
@@ -247,7 +249,8 @@ export let dom = {
                     let card = JSON.parse(request.response);
                     let cardHtml = dom.generateCardHtml(card[0].title, card[0].id);
                     dom.insertNewCard(card[0].board_id, card[0].status_id, cardHtml);
-                    dom.editCardContent()
+                    dom.editCardContent();
+
                 }
             })
         }
@@ -266,6 +269,7 @@ export let dom = {
     insertNewCard: function (board_id, status_id, cardHtml) {
         let board = document.querySelector('#board-' + board_id + '-column-' + status_id);
         board.insertAdjacentHTML('beforeend', cardHtml)
+        dom.deleteCards();
     },
 
 
