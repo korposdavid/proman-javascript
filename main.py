@@ -134,13 +134,15 @@ def registration():
 
 
 @app.route('/login', methods=['POST'])
+@json_response
 def login():
     data = json.loads(request.data)
     hashed_pw = data_handler.get_hash_by_username(data['username'])
     if hashed_pw and util.verify_password(data['password'], hashed_pw):
         session['username'] = data['username']
         session['user_id'] = data_handler.get_user_id_by_username(session['username'])
-        return {'username': session['username']}
+        return {'username': session['username'],
+                'user_id': session['user_id']}
     else:
         return {'invalid': True}
 

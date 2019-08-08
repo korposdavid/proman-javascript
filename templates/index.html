@@ -44,14 +44,18 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav" id="navbar-content">
+        {% if not session %}
             <a class="nav-item nav-link" data-toggle="modal"
                data-target="#loginModal">Login</a>
 
             <a class="nav-item nav-link" data-toggle="modal"
                data-target="#registrationModal">Registration</a>
+        {% endif %}
             {% if session %}
-            <a>{{ session.username }}</a>
-                <a href="/logout">Logout</a>
+                <a class="nav-item nav-link"
+                   href="/logout">Logout</a>
+                <a class="nav-item nav-link"
+                >{{ session.username }}</a>
             {% endif %}
         </div>
     </div>

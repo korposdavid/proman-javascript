@@ -438,6 +438,7 @@ export let dom = {
                 if (responseData.invalid) {
                     alert('Sorry, wrong username or password');
                 } else if(responseData.username){
+                    console.log('Successfully logged in');
                     dom.loggedIn(responseData.username);
                 }
 
