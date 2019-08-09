@@ -44,13 +44,13 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav" id="navbar-content">
-        {% if not session %}
-            <a class="nav-item nav-link" data-toggle="modal"
-               data-target="#loginModal">Login</a>
+            {% if not session %}
+                <a class="nav-item nav-link" data-toggle="modal"
+                   data-target="#loginModal">Login</a>
 
-            <a class="nav-item nav-link" data-toggle="modal"
-               data-target="#registrationModal">Registration</a>
-        {% endif %}
+                <a class="nav-item nav-link" data-toggle="modal"
+                   data-target="#registrationModal">Registration</a>
+            {% endif %}
             {% if session %}
                 <a class="nav-item nav-link"
                    href="/logout">Logout</a>
@@ -65,7 +65,14 @@
 {% include 'loginModal.html' %}
 
 <h1>ProMan</h1>
-<button class="board-add" id="new-board">+ New board</button>
+<div class="newButton" id="newButton">
+    <button class="board-add" id="new-board">+ New board</button>
+    {% if session %}
+        <button class="board-add" id="new-private-board">New private board</button>
+    {% endif %}
+
+</div>
+
 <div id="boards">
     <div id="loading">Boards are loading...</div>
 </div>

@@ -142,6 +142,7 @@ export let dom = {
     },
     // here comes more features
     newBoardBtn: function () {
+
         let button = document.getElementById('new-board');
         button.addEventListener('click', function () {
             let request = new XMLHttpRequest();
@@ -465,7 +466,18 @@ export let dom = {
                                     href="/logout">Logout</a>
                                     <a class="nav-item nav-link" 
                                     >${response}</a>`);
+        dom.addNewPrivateBoardButton();
+
     },
+    addNewPrivateBoardButton: function () {
+        const newButtons = document.getElementById('newButton');
+        newButtons.insertAdjacentHTML('beforeend', `
+                <button class="board-add" id="new-private-board">New private board</button>
+        `)
+
+
+    },
+
     deleteCards: function () {
         const delButton = document.querySelectorAll('.fa-trash-alt');
         for (let button of delButton) {
@@ -499,7 +511,6 @@ export let dom = {
             })
         }
 
-    }
-
+    },
 
 };
